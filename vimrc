@@ -1,23 +1,3 @@
-"
-" Personal preference .vimrc file
-" Maintained by Vincent Driessen <vincent@datafox.nl>
-"
-" My personally preferred version of vim is the one with the "big" feature
-" set, in addition to the following configure options:
-"
-"     ./configure --with-features=BIG
-"                 --enable-pythoninterp --enable-rubyinterp
-"                 --enable-enablemultibyte --enable-gui=no --with-x --enable-cscope
-"                 --with-compiledby="Vincent Driessen <vincent@datafox.nl>"
-"                 --prefix=/usr
-"
-" To start vim without using this .vimrc file, use:
-"     vim -u NORC
-"
-" To start vim without loading any .vimrc or plugins, use:
-"     vim -u NONE
-"
-
 " Use vim settings, rather then vi settings (much better!)
 " This must be first, because it changes other options as a side effect.
 set nocompatible
@@ -29,11 +9,13 @@ call pathogen#infect()
 call pathogen#helptags()
 filetype plugin indent on       " enable detection, plugins and indenting in one step
 syntax on
-syntax enable
+"syntax enable
 
 " Change the mapleader from \ to ,
 let mapleader=","
 let maplocalleader="\\"
+
+let g:Powerline_synbols = 'fancy'
 
 " Editing behaviour {{{
 set showmode                    " always show what mode we're currently editing in
@@ -46,7 +28,8 @@ set shiftround                  " use multiple of shiftwidth when indenting with
 set backspace=indent,eol,start  " allow backspacing over everything in insert mode
 set autoindent                  " always set autoindenting on
 set copyindent                  " copy the previous indentation on autoindenting
-set number                      " always show line numbers
+"set number                      " always show line numbers
+set relativenumber                      " always show line numbers
 set showmatch                   " set show matching parenthesis
 set ignorecase                  " ignore case when searching
 set smartcase                   " ignore case if search pattern is all lowercase,
@@ -56,6 +39,7 @@ set smarttab                    " insert tabs on the start of a line according t
 set scrolloff=4                 " keep 4 lines off the edges of the screen when scrolling
 set virtualedit=all             " allow the cursor to go in to "invalid" places
 set hlsearch                    " highlight search terms
+set colorcolumn=121             " show the 121 character mark
 set incsearch                   " show search matches as you type
 set gdefault                    " search/replace "globally" (on a line) by default
 set listchars=tab:▸\ ,trail:·,extends:#,nbsp:·
@@ -77,7 +61,7 @@ set nrformats=                  " make <C-a> and <C-x> play well with
 
 " Toggle show/hide invisible chars
 nnoremap <leader>i :set list!<cr>
-                             
+
 " Toggle line numbers
 nnoremap <leader>N :setlocal number!<cr>
 
@@ -94,8 +78,11 @@ nnoremap <C-y> 2<C-y>
 " Folding rules {{{
 set foldenable                  " enable folding
 set foldcolumn=2                " add a fold column
-set foldmethod=marker           " detect triple-{ style fold markers
-set foldlevelstart=99           " start out with everything folded
+"set foldmethod=marker           " detect triple-{ style fold markers
+set foldmethod=syntax           " detect triple-{ style fold markers
+"set foldlevelstart=99           " start out with everything folded
+set foldlevelstart=1
+set foldnestmax=1
 set foldopen=block,hor,insert,jump,mark,percent,quickfix,search,tag,undo
                                 " which commands trigger auto-unfold
 function! MyFoldText()
@@ -150,7 +137,7 @@ set viminfo='20,\"80            " read/write a .viminfo file, don't store more
 set wildmenu                    " make tab completion for files/buffers act like bash
 set wildmode=list:full          " show a list when pressing tab and complete
                                 "    first full match
-set wildignore=*.swp,*.bak,*.pyc,*.class
+"set wildignore=*.swp,*.bak,*.pyc,*.class
 set title                       " change the terminal's title
 set visualbell                  " don't beep
 set noerrorbells                " don't beep
@@ -158,26 +145,10 @@ set showcmd                     " show (partial) command in the last line of the
                                 "    this also shows visual selection info
 set nomodeline                  " disable mode lines (security measure)
 "set ttyfast                     " always use a fast terminal
+" set number                      " always show line numbers
 set cursorline                  " underline the current line, for quick orientation
-" }}}
+set statusline=%t[%{strlen(&fenc)?&fenc:'none'},%{&ff}]%h%m%r%y%=%c,%l/%L\ %P
 
-" Toggle the quickfix window {{{
-" From Steve Losh, http://learnvimscriptthehardway.stevelosh.com/chapters/38.html
-nnoremap <C-q> :call <SID>QuickfixToggle()<cr>
-
-let g:quickfix_is_open = 0
-
-function! s:QuickfixToggle()
-    if g:quickfix_is_open
-        cclose
-        let g:quickfix_is_open = 0
-        execute g:quickfix_return_to_window . "wincmd w"
-    else
-        let g:quickfix_return_to_window = winnr()
-        copen
-        let g:quickfix_is_open = 1
-    endif
-endfunction
 " }}}
 
 " Toggle the foldcolumn {{{
@@ -201,22 +172,8 @@ if &t_Co > 2 || has("gui_running")
 endif
 " }}}
 
-" Shortcut mappings {{{
-" Since I never use the ; key anyway, this is a real optimization for almost
-" all Vim commands, as I don't have to press the Shift key to form chords to
-" enter ex mode.
-nnoremap ; :
-nnoremap <leader>; ;
-
-" Avoid accidental hits of <F1> while aiming for <Esc>
-noremap! <F1> <Esc>
-
 " Quickly close the current window
 nnoremap <leader>q :q<CR>
-
-" Use Q for formatting the current paragraph (or visual selection)
-vnoremap Q gq
-nnoremap Q gqap
 
 " make p in Visual mode replace the selected text with the yank register
 vnoremap p <Esc>:let current_reg = @"<CR>gvdi<C-R>=current_reg<CR><Esc>
@@ -230,11 +187,14 @@ nnoremap mk :make<CR>
 nnoremap ' `
 nnoremap ` '
 
+" make ; work as command key to avoid shift
+nnoremap ; :
+
 " Use the damn hjkl keys
-" noremap <up> <nop>
-" noremap <down> <nop>
-" noremap <left> <nop>
-" noremap <right> <nop>
+ noremap <up> <nop>
+ noremap <down> <nop>
+ noremap <left> <nop>
+ noremap <right> <nop>
 
 " Remap j and k to act as expected when used on long, wrapped, lines
 nnoremap j gj
@@ -308,13 +268,6 @@ vnoremap <Space> za
 " Strip all trailing whitespace from a file, using ,w
 nnoremap <leader>W :%s/\s\+$//<CR>:let @/=''<CR>
 
-" Ack for the word under cursor
-"nnoremap <leader>a :Ack<Space>
-nnoremap <leader>a :Ack<Space><c-r><c-W>
-
-" Creating folds for tags in HTML
-"nnoremap <leader>ft Vatzf
-
 " Reselect text that was just pasted with ,v
 nnoremap <leader>v V`]
 
@@ -356,221 +309,12 @@ let NERDTreeIgnore=[ '\.pyc$', '\.pyo$', '\.py\$class$', '\.obj$',
 
 " }}}
 
-" TagList settings {{{
-nnoremap <leader>l :TlistClose<CR>:TlistToggle<CR>
-nnoremap <leader>L :TlistClose<CR>
-
-" quit Vim when the TagList window is the last open window
-let Tlist_Exit_OnlyWindow=1         " quit when TagList is the last open window
-let Tlist_GainFocus_On_ToggleOpen=1 " put focus on the TagList window when it opens
-"let Tlist_Process_File_Always=1     " process files in the background, even when the TagList window isn't open
-"let Tlist_Show_One_File=1           " only show tags from the current buffer, not all open buffers
-let Tlist_WinWidth=40               " set the width
-let Tlist_Inc_Winwidth=1            " increase window by 1 when growing
-
-" shorten the time it takes to highlight the current tag (default is 4 secs)
-" note that this setting influences Vim's behaviour when saving swap files,
-" but we have already turned off swap files (earlier)
-"set updatetime=1000
-
-" the default ctags in /usr/bin on the Mac is GNU ctags, so change it to the
-" exuberant ctags version in /usr/local/bin
-let Tlist_Ctags_Cmd = '/usr/local/bin/ctags'
-
-" show function/method prototypes in the list
-let Tlist_Display_Prototype=1
-
-" don't show scope info
-let Tlist_Display_Tag_Scope=0
-
-" show TagList window on the right
-let Tlist_Use_Right_Window=1
-
-" }}}
-
-" vim-flake8 default configuration
-let g:flake8_max_line_length=120
-
 " Conflict markers {{{
 " highlight conflict markers
 match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
 
 " shortcut to jump to next conflict marker
 nnoremap <silent> <leader>c /^\(<\\|=\\|>\)\{7\}\([^=].\+\)\?$<CR>
-" }}}
-
-" Filetype specific handling {{{
-" only do this part when compiled with support for autocommands
-if has("autocmd")
-    augroup invisible_chars "{{{
-        au!
-
-        " Show invisible characters in all of these files
-        autocmd filetype vim setlocal list
-        autocmd filetype python,rst setlocal list
-        autocmd filetype ruby setlocal list
-        autocmd filetype javascript,css setlocal list
-    augroup end "}}}
-
-    augroup vim_files "{{{
-        au!
-
-        " Bind <F1> to show the keyword under cursor
-        " general help can still be entered manually, with :h
-        autocmd filetype vim noremap <buffer> <F1> <Esc>:help <C-r><C-w><CR>
-        autocmd filetype vim noremap! <buffer> <F1> <Esc>:help <C-r><C-w><CR>
-    augroup end "}}}
-
-    augroup html_files "{{{
-        au!
-
-        " This function detects, based on HTML content, whether this is a
-        " Django template, or a plain HTML file, and sets filetype accordingly
-        fun! s:DetectHTMLVariant()
-            let n = 1
-            while n < 50 && n < line("$")
-                " check for django
-                if getline(n) =~ '{%\s*\(extends\|load\|block\|if\|for\|include\|trans\)\>'
-                    set ft=htmldjango.html
-                    return
-                endif
-                let n = n + 1
-            endwhile
-            " go with html
-            set ft=html
-        endfun
-
-        autocmd BufNewFile,BufRead *.html,*.htm,*.j2 call s:DetectHTMLVariant()
-
-        " Auto-closing of HTML/XML tags
-        let g:closetag_default_xml=1
-        autocmd filetype html,htmldjango let b:closetag_html_style=1
-        autocmd filetype html,xhtml,xml source ~/.vim/scripts/closetag.vim
-    augroup end " }}}
-
-    augroup python_files "{{{
-        au!
-
-        " This function detects, based on Python content, whether this is a
-        " Django file, which may enabling snippet completion for it
-        fun! s:DetectPythonVariant()
-            let n = 1
-            while n < 50 && n < line("$")
-                " check for django
-                if getline(n) =~ 'import\s\+\<django\>' || getline(n) =~ 'from\s\+\<django\>\s\+import'
-                    set ft=python.django
-                    "set syntax=python
-                    return
-                endif
-                let n = n + 1
-            endwhile
-            " go with html
-            set ft=python
-        endfun
-        autocmd BufNewFile,BufRead *.py call s:DetectPythonVariant()
-
-        " PEP8 compliance (set 1 tab = 4 chars explicitly, even if set
-        " earlier, as it is important)
-        autocmd filetype python setlocal expandtab shiftwidth=4 tabstop=4 softtabstop=4
-        autocmd filetype python setlocal textwidth=78
-        autocmd filetype python match ErrorMsg '\%>120v.\+'
-
-        " But disable autowrapping as it is super annoying
-        autocmd filetype python setlocal formatoptions-=t
-
-        " Folding for Python (uses syntax/python.vim for fold definitions)
-        "autocmd filetype python,rst setlocal nofoldenable
-        "autocmd filetype python setlocal foldmethod=expr
-
-        " Python runners
-        autocmd filetype python noremap <buffer> <F5> :w<CR>:!python %<CR>
-        autocmd filetype python inoremap <buffer> <F5> <Esc>:w<CR>:!python %<CR>
-        autocmd filetype python noremap <buffer> <S-F5> :w<CR>:!ipython %<CR>
-        autocmd filetype python inoremap <buffer> <S-F5> <Esc>:w<CR>:!ipython %<CR>
-
-        " Automatic insertion of breakpoints
-        autocmd filetype python nnoremap <buffer> <leader>bp :normal Oimport pdb; pdb.set_trace()<Esc>
-
-        " Toggling True/False
-        autocmd filetype python nnoremap <silent> <C-t> mmviw:s/True\\|False/\={'True':'False','False':'True'}[submatch(0)]/<CR>`m:nohlsearch<CR>
-
-    augroup end " }}}
-
-    augroup supervisord_files "{{{
-        au!
-
-        autocmd BufNewFile,BufRead supervisord.conf set ft=dosini
-    augroup end " }}}
-
-    augroup markdown_files "{{{
-        au!
-
-        autocmd filetype markdown noremap <buffer> <leader>p :w<CR>:!open -a Marked %<CR><CR>
-    augroup end " }}}
-
-    augroup ruby_files "{{{
-        au!
-
-        autocmd filetype ruby setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
-    augroup end " }}}
-
-    augroup rst_files "{{{
-        au!
-
-        " Auto-wrap text around 74 chars
-        autocmd filetype rst setlocal textwidth=74
-        autocmd filetype rst setlocal formatoptions+=nqt
-        autocmd filetype rst match ErrorMsg '\%>74v.\+'
-    augroup end " }}}
-
-    augroup css_files "{{{
-        au!
-
-        autocmd filetype css,less setlocal foldmethod=marker foldmarker={,}
-    augroup end "}}}
-
-    augroup javascript_files "{{{
-        au!
-
-        autocmd filetype javascript setlocal expandtab
-        autocmd filetype javascript setlocal listchars=trail:·,extends:#,nbsp:·
-        autocmd filetype javascript setlocal foldmethod=marker foldmarker={,}
-
-        " Toggling True/False
-        autocmd filetype javascript nnoremap <silent> <C-t> mmviw:s/true\\|false/\={'true':'false','false':'true'}[submatch(0)]/<CR>`m:nohlsearch<CR>
-    augroup end "}}}
-
-    augroup textile_files "{{{
-        au!
-
-        autocmd filetype textile set tw=78 wrap
-
-        " Render YAML front matter inside Textile documents as comments
-        autocmd filetype textile syntax region frontmatter start=/\%^---$/ end=/^---$/
-        autocmd filetype textile highlight link frontmatter Comment
-    augroup end "}}}
-endif
-" }}}
-
-" Skeleton processing {{{
-
-if has("autocmd")
-
-    "if !exists('*LoadTemplate')
-    "function LoadTemplate(file)
-        "" Add skeleton fillings for Python (normal and unittest) files
-        "if a:file =~ 'test_.*\.py$'
-            "execute "0r ~/.vim/skeleton/test_template.py"
-        "elseif a:file =~ '.*\.py$'
-            "execute "0r ~/.vim/skeleton/template.py"
-        "endif
-    "endfunction
-    "endif
-
-    "autocmd BufNewFile * call LoadTemplate(@%)
-
-endif " has("autocmd")
-
 " }}}
 
 " Restore cursor position upon reopening files {{{
@@ -583,33 +327,6 @@ autocmd BufReadPost *
 " Common abbreviations / misspellings {{{
 "source ~/.vim/autocorrect.vim
 " }}}
-
-" Extra vi-compatibility {{{
-" set extra vi-compatible options
-set cpoptions+=$     " when changing a line, don't redisplay, but put a '$' at
-                     " the end during the change
-set formatoptions-=o " don't start new lines w/ comment leader on pressing 'o'
-au filetype vim set formatoptions-=o
-                     " somehow, during vim filetype detection, this gets set
-                     " for vim files, so explicitly unset it again
-" }}}
-
-" Extra user or machine specific settings {{{
-"source ~/.vim/user.vim
-" }}}
-
-" Creating underline/overline headings for markup languages
-" Inspired by http://sphinx.pocoo.org/rest.html#sections
-nnoremap <leader>1 yyPVr=jyypVr=
-nnoremap <leader>2 yyPVr*jyypVr*
-nnoremap <leader>3 yypVr=
-nnoremap <leader>4 yypVr-
-nnoremap <leader>5 yypVr^
-nnoremap <leader>6 yypVr"
-
-iab lorem Lorem ipsum dolor sit amet, consectetur adipiscing elit
-iab llorem Lorem ipsum dolor sit amet, consectetur adipiscing elit.  Etiam lacus ligula, accumsan id imperdiet rhoncus, dapibus vitae arcu.  Nulla non quam erat, luctus consequat nisi
-iab lllorem Lorem ipsum dolor sit amet, consectetur adipiscing elit.  Etiam lacus ligula, accumsan id imperdiet rhoncus, dapibus vitae arcu.  Nulla non quam erat, luctus consequat nisi.  Integer hendrerit lacus sagittis erat fermentum tincidunt.  Cras vel dui neque.  In sagittis commodo luctus.  Mauris non metus dolor, ut suscipit dui.  Aliquam mauris lacus, laoreet et consequat quis, bibendum id ipsum.  Donec gravida, diam id imperdiet cursus, nunc nisl bibendum sapien, eget tempor neque elit in tortor
 
 if has("gui_running")
     "set guifont=saxMono:h14 linespace=3
@@ -687,52 +404,9 @@ endfunction
 
 " }}}
 
-" Powerline configuration ------------------------------------------------- {{{
-
-"let g:Powerline_symbols = 'compatible'
-let g:Powerline_symbols = 'fancy'
-
-" }}}
-
-" Python mode configuration ----------------------------------------------- {{{
-
-" Don't run pylint on every save
-let g:pymode_lint = 0
-let g:pymode_lint_write = 0
-
-" }}}
-
 " Learn Vim Script the Hard Way Exercises
 "noremap - ddp
 "noremap _ ddkP
-
-" C-U in insert/normal mode, to uppercase the word under cursor
-inoremap <c-u> <esc>viwUea
-nnoremap <c-u> viwUe
-
-iabbr m@@ me@nvie.com
-iabbr v@@ vincent@3rdcloud.com
-iabbr ssig --<cr>Vincent Driessen<cr>vincent@3rdcloud.com
-
-" Quote words under cursor
-nnoremap <leader>" viw<esc>a"<esc>hbi"<esc>lel
-nnoremap <leader>' viw<esc>a'<esc>hbi'<esc>lel
-
-" Quote current selection
-" TODO: This only works for selections that are created "forwardly"
-vnoremap <leader>" <esc>a"<esc>gvo<esc>i"<esc>gvo<esc>ll
-vnoremap <leader>' <esc>a'<esc>gvo<esc>i'<esc>gvo<esc>ll
-
-" Use shift-H and shift-L for move to beginning/end
-nnoremap H 0
-nnoremap L $
-
-" Define operator-pending mappings to quickly apply commands to function names
-" and/or parameter lists in the current line
-onoremap inf :<c-u>normal! 0f(hviw<cr>
-onoremap anf :<c-u>normal! 0f(hvaw<cr>
-onoremap in( :<c-u>normal! 0f(vi(<cr>
-onoremap an( :<c-u>normal! 0f(va(<cr>
 
 " "Next" tag
 onoremap int :<c-u>normal! 0f<vit<cr>
@@ -750,6 +424,7 @@ nnoremap <leader>sl :execute "rightbelow vsplit" bufname('#')<cr>
 "nnoremap <leader>g :silent execute "grep! -R " . shellescape('<cword>') . " ."<cr>:copen 12<cr>
 "nnoremap <leader>G :silent execute "grep! -R " . shellescape('<cWORD>') . " ."<cr>:copen 12<cr>
 
-" Run tests
-inoremap <leader>w <esc>:write<cr>:!./run_tests.sh %<cr>
-nnoremap <leader>w :!./run_tests.sh<cr>
+
+" ------------------------PLAY
+" sort CSS props
+nnoremap <leader>S ?{<CR>jV/^\s*\}?$<CR>k:sort<CR>:noh<CR>

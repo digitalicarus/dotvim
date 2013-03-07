@@ -1,6 +1,9 @@
-[submodule "vim-fugitive"]
-	path = vim-fugitive
-	url = http://github.com/tpope/vim-fugitive.git
 [submodule "bundle/fugitive"]
 	path = bundle/fugitive
 	url = http://github.com/tpope/vim-fugitive.git
+[submodule "bundle/nerdtree"]
+	path = bundle/nerdtree
+	url = http://github.com/scrooloose/nerdtree.git
+[submodule "bundle/vim-colors-solarized"]
+	path = bundle/vim-colors-solarized
+	url = http://github.com/altercation/vim-colors-solarized.git

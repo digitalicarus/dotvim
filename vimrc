@@ -15,7 +15,6 @@ syntax on
 let mapleader=","
 let maplocalleader="\\"
 
-let g:Powerline_synbols = 'fancy'
 
 " Editing behaviour {{{
 set showmode                    " always show what mode we're currently editing in
@@ -49,7 +48,7 @@ set nolist                      " don't show invisible characters by default,
 set pastetoggle=<F2>            " when in insert mode, press <F2> to go to
                                 "    paste mode, where you can paste mass data
                                 "    that won't be autoindented
-set mouse=a                     " enable using the mouse if terminal emulator
+"set mouse=a                     " enable using the mouse if terminal emulator
                                 "    supports it (xterm does)
 set fileformats="unix,dos,mac"
 set formatoptions+=1            " When wrapping paragraphs, don't end lines
@@ -58,7 +57,9 @@ set formatoptions+=1            " When wrapping paragraphs, don't end lines
 set nrformats=                  " make <C-a> and <C-x> play well with
                                 "    zero-padded numbers (i.e. don't consider
                                 "    them octal or hex)
+                                "
 
+set clipboard=unnamed
 " Toggle show/hide invisible chars
 nnoremap <leader>i :set list!<cr>
 
@@ -334,8 +335,27 @@ if has("gui_running")
     "set guifont=Mensch\ for\ Powerline:h14 linespace=0
     "set guifont=Droid\ Sans\ Mono:h14 linespace=0
     "set guifont=Ubuntu\ Mono:h18 linespace=3
-    set guifont=Source\ Code\ Pro\ Light:h14 linespace=0
+    "set guifont=Source\ Code\ Pro\ Medium:h14 linespace=0
+    set guifont=Fira\ Mono\ for\ Powerline:h14 linespace=0
 
+	" No longer using powerline, it's python now. Airline is still pathogen
+	" compatible
+	"let g:Powerline_symbols = 'fancy'
+	" allow airline to use powerline fonts. I like Source Code Pro
+	let g:airline_powerline_fonts = 1
+
+	set statusline+=%#warningmsg#
+	set statusline+=%{SyntasticStatuslineFlag()}
+	set statusline+=%*
+
+	let g:syntastic_always_populate_loc_list = 1
+	let g:syntastic_auto_loc_list = 1
+	let g:syntastic_check_on_open = 1
+	let g:syntastic_check_on_wq = 0
+
+	let g:syntastic_javascript_jshint_checkers = ["js"]
+
+    set bg=dark
     "colorscheme molokai
     "colorscheme railscat
     "colorscheme kellys

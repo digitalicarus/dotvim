@@ -14,3 +14,9 @@ Switch to the `~/.vim` directory, and fetch submodules:
     git submodule update
 
 Need jshint for Syntastic (install with node v4 and add bin folder of command line to path)
+
+Get syntax highlighting moduels
+	npm i -g eslint eslint-plugin-vue
+
+Make master undo dir
+	mkdir ~/.vim/.undo

@@ -22,3 +22,9 @@
 [submodule "bundle/syntastic"]
 	path = bundle/syntastic
 	url = https://github.com/scrooloose/syntastic.git
+[submodule "bundle/vim-vue-syntastic"]
+	path = bundle/vim-vue-syntastic
+	url = https://github.com/sekel/vim-vue-syntastic.git
+[submodule "bundle/vim-vue"]
+	path = bundle/vim-vue
+	url = https://github.com/posva/vim-vue.git
